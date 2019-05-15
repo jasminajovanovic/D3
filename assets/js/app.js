@@ -44,7 +44,6 @@ function yScale(data, chosenYAxis) {
       d3.max(data, d => d[chosenYAxis]) * 1.2
     ])
     .range([height, 0])
-  yLinearScale.ticks(15)
   return yLinearScale
 }
 
@@ -127,11 +126,11 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   return circlesGroup;
 }
 
+// TODO: heroku?
+
 // Retrieve data from the CSV file and execute everything below
 (async function(){
-  // TODO: figure out path to data, remove from this dir
-    const data = await d3.csv("data.csv");
-    // console.log (data)
+    const data = await d3.csv("../assets/data/data.csv").catch(error => console.warn(error));;
 
     // parse data
     data.forEach(function(data) {
@@ -173,9 +172,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("r", 8)
         .classed("stateCircle", true);
 
-      // TODO: figure out how to put text in the background
 
-// TODO: figure out why centering of text in bubble changes after a click
     let stateText = chartGroup.selectAll(".stateText")
         .data(data)
         .enter()
@@ -312,9 +309,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
             // updates y scale for new data
             yLinearScale = yScale(data, chosenYAxis);
             // updates y axis with transition
-            // xAxis = renderXAxes(xLinearScale, xAxis);
             yAxis = renderYAxes(yLinearScale, yAxis)
-            // updates circles with new x values
+            // updates circles with new values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
             stateText = renderLabels(stateText, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
             // updates tooltips with new info
