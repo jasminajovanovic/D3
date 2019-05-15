@@ -33,7 +33,6 @@ function xScale(data, chosenXAxis) {
       d3.max(data, d => d[chosenXAxis]) * 1.2
     ])
     .range([0, width]);
-
   return xLinearScale;
 
 }
@@ -45,6 +44,7 @@ function yScale(data, chosenYAxis) {
       d3.max(data, d => d[chosenYAxis]) * 1.2
     ])
     .range([height, 0])
+  yLinearScale.ticks(15)
   return yLinearScale
 }
 
@@ -83,8 +83,8 @@ function renderCircles(circlesGroup, newXScale, newYScale, chosenXaxis, chosenYA
 function renderLabels (labelsGroup, newXScale, newYScale, chosenXaxis, chosenYAxis) {
   labelsGroup.transition()
     .duration(1000)
-    .attr("x", d => newXScale(d[chosenXAxis]))
-    .attr("y", d => newYScale(d[chosenYAxis]));
+    .attr("dx", d => newXScale(d[chosenXAxis]))
+    .attr("dy", d => newYScale(d[chosenYAxis])+2);
 
   return labelsGroup;
 }
@@ -170,22 +170,22 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
-        .attr("r", 10)
-        .attr("fill", "blue")
-        .attr("opacity", ".5");
-        // .attr("text", d => d.state);
+        .attr("r", 8)
+        .classed("stateCircle", true);
 
       // TODO: figure out how to put text in the background
 
+// TODO: figure out why centering of text in bubble changes after a click
     let stateText = chartGroup.selectAll(".stateText")
         .data(data)
         .enter()
         .append("text")
         .classed("stateText", true)
-        .attr("x", d => xLinearScale(d[chosenXAxis]))
-        .attr("y", d => yLinearScale(d[chosenYAxis])+5)
+        .attr("dx", d => xLinearScale(d[chosenXAxis]))
+        .attr("dy", d => yLinearScale(d[chosenYAxis])+2)
         .text(d => d.abbr)
 
+// TODO: figure out why y axis tick marks are added to previous ones
 
     // Create group for axis labels
     const xLabelsGroup = chartGroup.append("g")
@@ -221,6 +221,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("y", -40)
         .attr("value", "healthcare") // value to grab for event listener
         .classed("active", true)
+        .classed("y-label", true)
         .attr("transform", `rotate(-90)`)
         .text("Lacks Healthcare (%)");
 
@@ -229,6 +230,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("y", -60)
         .attr("value", "smokes") // value to grab for event listener
         .classed("inactive", true)
+        .classed("y-label", true)
         .attr("transform", `rotate(-90)`)
         .text("Smokes (%)");
 
@@ -238,12 +240,12 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("y", -80)
         .attr("value", "obesity") // value to grab for event listener
         .classed("inactive", true)
+        .classed("y-label", true)
         .attr("transform", `rotate(-90)`)
         .text("Obesity (%)");
 
     // updateToolTip function above csv import
-    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-    // stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
+    stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
     // x axis labels event listener
     xLabelsGroup.selectAll("text")
         .on("click", function() {
@@ -256,12 +258,11 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
             xLinearScale = xScale(data, chosenXAxis);
             // updates x axis with transition
             xAxis = renderXAxes(xLinearScale, xAxis);
-            // updates circles with new x values
+            // updates circles and labels with new x, y values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
             stateText = renderLabels(stateText, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
             // updates tooltips with new info
-            circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-            // stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
+            stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
 
             // changes classes to change bold text
             if (chosenXAxis === "age") {
@@ -306,28 +307,18 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         // get value of selection
         const value = d3.select(this).attr("value");
         if (value !== chosenYAxis) {
-
             // replaces chosenYAxis with value
             chosenYAxis = value;
-
-            // console.log(chosenXAxis)
-
-            // functions here found above csv import
             // updates y scale for new data
             yLinearScale = yScale(data, chosenYAxis);
-
             // updates y axis with transition
             // xAxis = renderXAxes(xLinearScale, xAxis);
             yAxis = renderYAxes(yLinearScale, yAxis)
-
             // updates circles with new x values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
             stateText = renderLabels(stateText, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
-
             // updates tooltips with new info
-            circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-            // stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
-
+            stateText = updateToolTip(chosenXAxis, chosenYAxis, stateText)
             // changes classes to change bold text
             if (chosenYAxis === "healthcare") {
                 healthcareLabel

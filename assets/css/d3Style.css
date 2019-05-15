@@ -23,11 +23,18 @@
   cursor: pointer;
 }
 
+.y-label {
+  font-family: sans-serif;
+  font-size: 16px;  
+}
 /* font size dependent on radius, see app.js */
 .stateText {
   font-family: sans-serif;
   fill: #fff;
-  font-size: 10px;
+  font-size: 8px;
+  font-weight: bold;
+  position: relative;
+  z-index: -10;
   text-anchor: middle;
 }
 
@@ -49,14 +56,11 @@
   color: #fff;
   text-align: center;
   text-transform: capitalize;
-  /* background: #BCC5F7; */
   background: rgba(0, 0, 0, 0.8);
   border-radius: 4px;
 }
 
-.stateText {
-  z-index: -1;
-}
+
 /* Mobile Rules */
 @media screen and (max-width: 530px) {
   .stateText {
