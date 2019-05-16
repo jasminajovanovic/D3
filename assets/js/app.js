@@ -43,8 +43,8 @@ function yScale(data, chosenYAxis) {
     .domain([d3.min(data, d => d[chosenYAxis]) * 0.8,
       d3.max(data, d => d[chosenYAxis]) * 1.2
     ])
-    .range([height, 0])
-  return yLinearScale
+    .range([height, 0]);
+  return yLinearScale;
 }
 
 function renderXAxes(newXScale, xAxis) {
@@ -60,7 +60,7 @@ function renderXAxes(newXScale, xAxis) {
 
 function renderYAxes(newYScale, yAxis) {
   const leftAxis = d3.axisLeft(newYScale);
-
+    console.log("rendering Y");
     yAxis.transition()
       .duration(1000)
       .call(leftAxis);
@@ -131,7 +131,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 // Retrieve data from the CSV file and execute everything below
 (async function(){
     const data = await d3.csv("../assets/data/data.csv").catch(error => console.warn(error));;
-
+    console.log("initalizzed");
     // parse data
     data.forEach(function(data) {
         data.income = +data.income;
@@ -158,9 +158,13 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .call(bottomAxis);
 
     // append y axis
-    let yAxis = chartGroup.append("g")
+    var yAxis = chartGroup.append("g")
         .classed("y-axis", true)
         .call(leftAxis);
+
+    // let yAxis = d3.axisLeft(yLinearScale)
+
+    // yAxis = renderYAxes(yLinearScale, yAxis)
 
     // append initial circles
     let circlesGroup = chartGroup.selectAll("circle")
@@ -210,8 +214,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .text("Income");
 
 
-    const yLabelsGroup = chartGroup.append("g").call(leftAxis);
-
+    const yLabelsGroup = chartGroup.append("g");
+    
     // append y axis
     const healthcareLabel = yLabelsGroup.append("text")
         .attr("x", -height/2)
