@@ -126,8 +126,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   return circlesGroup;
 }
 
-// TODO: heroku?
-
 // Retrieve data from the CSV file and execute everything below
 (async function(){
     const data = await d3.csv("../assets/data/data.csv").catch(error => console.warn(error));;
@@ -186,8 +184,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("dy", d => yLinearScale(d[chosenYAxis])+2)
         .text(d => d.abbr)
 
-// TODO: figure out why y axis tick marks are added to previous ones
-
     // Create group for axis labels
     const xLabelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
@@ -215,7 +211,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
 
     const yLabelsGroup = chartGroup.append("g");
-    
+
     // append y axis
     const healthcareLabel = yLabelsGroup.append("text")
         .attr("x", -height/2)
