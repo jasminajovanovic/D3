@@ -109,8 +109,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         // .style("background",'#BCC5F7')
         .html(function(d) {
             return (`${d.state}<br>
-              ${label}: ${d[chosenXAxis]}<br>
-              ${chosenYAxis}: ${d[chosenYAxis]}`);
+              ${label}: ${d[chosenXAxis]}%<br>
+              ${chosenYAxis}: ${d[chosenYAxis]}%`);
         });
 
     circlesGroup.call(toolTip);
